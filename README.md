@@ -1,85 +1,13 @@
-## Healthtech
+### Testar online:
 
-Combinar dados de Saúde (DataSUS / Ministério da Saúde), Demografia e Indicadores Sociais (IBGE) e Finanças (Banco Central / Cotações) em uma única API
+Como testar agora mesmo:
+Aceder à Documentação Interativa (Swagger UI):
+Abra o link no seu navegador:
 
-
-### Instalando UV FastAPI:
-
-        uv add fastapi
-
-Resolved 12 packages in 1.23s
-      Built healthtech @ file://
-Prepared 6 packages in 967ms
-Uninstalled 1 package in 11ms
-Installed 12 packages in 387ms
- + annotated-doc==0.0.5
- + annotated-types==0.8.0
- + anyio==4.15.1
- + fastapi==0.142.1
- ~ healthtech==0.1.0 (from file://)
- + idna==3.20
- + opentelemetry-api==1.45.0
- + pydantic==2.13.5
- + pydantic-core==2.46.5
- + starlette==1.7.0
- + typing-extensions==4.16.0
- + typing-inspection==0.4.4
+👉 https://healthtech-ripb.onrender.com/docs
 
 
- ### Instalando HTTPx:
-
-        uv add httpx
-
-Resolved 16 packages in 1.46s
-      Built healthtech @ file://                                      
-Prepared 1 package in 144ms
-Uninstalled 1 package in 6ms
-Installed 5 packages in 1.09s
- + certifi==2026.7.22
- + h11==0.16.0
- ~ healthtech==0.1.0 (from file://)
- + httpcore==1.0.9
- + httpx==0.28.1
-
-
- ### Instalando Unicorn
-
-        uv add fastapi uvicorn
-
-Resolved 18 packages in 283ms
-      Built healthtech @ file:/                                                   
-Prepared 2 packages in 143ms
-Uninstalled 1 package in 12ms
-Installed 3 packages in 89ms
- + click==8.5.0
- ~ healthtech==0.1.0 (from file://)
- + uvicorn==0.54.0
-
-
- ### Iniciar o servidor API:
-
-        uv run uvicorn main:app --reload
-
-
-
-### Instalar .env para Keys:
-
-        uv add python-dotenv
-
-Resolved 19 packages in 249ms
-      Built healthtech @ file://                                                   
-Prepared 1 package in 42ms
-Uninstalled 1 package in 5ms
-Installed 2 packages in 136ms
- ~ healthtech==0.1.0 (from file:/)
- + python-dotenv==1.2.3
-
-
-Rodar novamente a API:
-
-    uv run uvicorn main:app --reload
-
-
+![alt text](image.png)
 
 # 🏥 Healthtech API Unificada (Saúde, IBGE e Financeiro)
 
@@ -266,13 +194,87 @@ uvicorn==0.54.0
     # via healthtech (pyproject.toml)
 
 
-### Testar online:
 
-Como testar agora mesmo:
-Aceder à Documentação Interativa (Swagger UI):
-Abra o link no seu navegador:
+## Healthtech
 
-👉 https://healthtech-ripb.onrender.com/docs
+Combinar dados de Saúde (DataSUS / Ministério da Saúde), Demografia e Indicadores Sociais (IBGE) e Finanças (Banco Central / Cotações) em uma única API
 
 
-![alt text](image.png)
+### Instalando UV FastAPI:
+
+        uv add fastapi
+
+Resolved 12 packages in 1.23s
+      Built healthtech @ file://
+Prepared 6 packages in 967ms
+Uninstalled 1 package in 11ms
+Installed 12 packages in 387ms
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.15.1
+ + fastapi==0.142.1
+ ~ healthtech==0.1.0 (from file://)
+ + idna==3.20
+ + opentelemetry-api==1.45.0
+ + pydantic==2.13.5
+ + pydantic-core==2.46.5
+ + starlette==1.7.0
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+
+
+ ### Instalando HTTPx:
+
+        uv add httpx
+
+Resolved 16 packages in 1.46s
+      Built healthtech @ file://                                      
+Prepared 1 package in 144ms
+Uninstalled 1 package in 6ms
+Installed 5 packages in 1.09s
+ + certifi==2026.7.22
+ + h11==0.16.0
+ ~ healthtech==0.1.0 (from file://)
+ + httpcore==1.0.9
+ + httpx==0.28.1
+
+
+ ### Instalando Unicorn
+
+        uv add fastapi uvicorn
+
+Resolved 18 packages in 283ms
+      Built healthtech @ file:/                                                   
+Prepared 2 packages in 143ms
+Uninstalled 1 package in 12ms
+Installed 3 packages in 89ms
+ + click==8.5.0
+ ~ healthtech==0.1.0 (from file://)
+ + uvicorn==0.54.0
+
+
+ ### Iniciar o servidor API:
+
+        uv run uvicorn main:app --reload
+
+
+
+### Instalar .env para Keys:
+
+        uv add python-dotenv
+
+Resolved 19 packages in 249ms
+      Built healthtech @ file://                                                   
+Prepared 1 package in 42ms
+Uninstalled 1 package in 5ms
+Installed 2 packages in 136ms
+ ~ healthtech==0.1.0 (from file:/)
+ + python-dotenv==1.2.3
+
+
+Rodar novamente a API:
+
+    uv run uvicorn main:app --reload
+
+
+
