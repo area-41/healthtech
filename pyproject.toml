@@ -1,0 +1,22 @@
+[project]
+name = "healthtech"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Área 41", email = "email.diferente.victor@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.142.1",
+    "httpx>=0.28.1",
+    "python-dotenv>=1.2.3",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+healthtech = "healthtech:main"
+
+[build-system]
+requires = ["uv_build>=0.12.6,<0.13.0"]
+build-backend = "uv_build"

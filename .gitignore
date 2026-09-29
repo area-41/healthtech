@@ -1,0 +1,15 @@
+# Ambientes virtuais
+.venv/
+env/
+venv/
+
+# Variáveis de ambiente e credenciais
+.env
+
+# Pytest e cache de Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Configurações do VS Code
+.vscode/
