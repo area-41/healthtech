@@ -6,6 +6,12 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
+# Define o caminho absoluto para a pasta 'static' relativa ao main.py
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
+INDEX_FILE = STATIC_DIR / "index.html"
 
 # Carrega variáveis do ficheiro .env
 load_dotenv()
@@ -20,9 +26,10 @@ app = FastAPI(
     docs_url=None
 )
 
-# Monta arquivos estáticos (se a pasta 'static' existir no repositório)
-if os.path.exists("static"):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+# Monta arquivos estáticos se o diretório existir
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
 
 # Mapeamento Oficial do Tipo de Unidade do CNES (DataSUS)
 CNES_TIPOS_UNIDADE = {
@@ -55,8 +62,9 @@ CNES_API = "https://apidadosabertos.saude.gov.br/cnes/estabelecimentos"
 # Rota Principal (Servir frontend HTML se existir, senão JSON de boas-vindas)
 @app.get("/")
 async def homepage():
-    if os.path.exists("static/index.html"):
-        return FileResponse("static/index.html")
+    # Verifica se o ficheiro index.html existe usando o caminho absoluto
+    if INDEX_FILE.exists():
+        return FileResponse(str(INDEX_FILE))
     return {
         "status": "online",
         "docs_swagger": "/docs",
