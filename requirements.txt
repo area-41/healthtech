@@ -1,27 +1,6 @@
-brotlipy @ file:///D:/bld/brotlipy_1666764804378/work
-certifi==2022.12.7
-cffi @ file:///D:/bld/cffi_1671179506518/work
-charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1661170624537/work
-colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1666700638685/work
-conda==23.1.0
-conda-content-trust @ file:///C:/Windows/TEMP/abs_4589313d-fc62-4ccc-81c0-b801b4449e833j1ajrwu/croots/recipe/conda-content-trust_1658126379362/work
-conda-package-handling @ file:///home/conda/feedstock_root/build_artifacts/conda-package-handling_1669907009957/work
-conda_package_streaming @ file:///home/conda/feedstock_root/build_artifacts/conda-package-streaming_1669733752472/work
-cryptography @ file:///D:/bld/cryptography-split_1675828851033/work
-idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1663625384323/work
-menuinst @ file:///C:/Users/BUILDE~1/AppData/Local/Temp/abs_455sf5o0ct/croots/recipe/menuinst_1661805970842/work
-pluggy @ file:///home/conda/feedstock_root/build_artifacts/pluggy_1667232663820/work
-pycosat @ file:///D:/bld/pycosat_1666836675990/work
-pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1636257122734/work
-pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1672659226110/work
-PySocks @ file:///D:/bld/pysocks_1661604991356/work
-requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1673863902341/work
-ruamel.yaml @ file:///D:/bld/ruamel.yaml_1666827334574/work
-ruamel.yaml.clib @ file:///D:/bld/ruamel.yaml.clib_1670412994006/work
-six @ file:///home/conda/feedstock_root/build_artifacts/six_1620240208055/work
-toolz @ file:///home/conda/feedstock_root/build_artifacts/toolz_1657485559105/work
-tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1662214488106/work
-urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1673452138552/work
-win-inet-pton @ file:///D:/bld/win_inet_pton_1667051142467/work
-wincertstore==0.2
-zstandard==0.19.0
+fastapi>=0.100.0
+uvicorn>=0.20.0
+httpx>=0.24.0
+cachetools>=5.3.0
+apscheduler>=3.10.0
+python-dotenv>=1.0.0
