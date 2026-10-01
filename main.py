@@ -9,10 +9,13 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import httpx
-from cachetools import TTLCache
+#from cachetools import TTLCache
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dotenv import load_dotenv
+import time
 
+# Estrutura simples de cache em memória
+_cache = {}
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
@@ -37,6 +40,20 @@ cache_24h = TTLCache(maxsize=1000, ttl=86400)
 cache_1h = TTLCache(maxsize=500, ttl=3600)
 
 scheduler = AsyncIOScheduler()
+
+def get_from_cache(key: str, ttl_seconds: int = 3600):
+    """Recupera valor do cache se ainda estiver válido."""
+    if key in _cache:
+        val, timestamp = _cache[key]
+        if time.time() - timestamp < ttl_seconds:
+            return val
+        else:
+            del _cache[key]
+    return None
+
+def set_in_cache(key: str, value: any):
+    """Salva valor no cache com o timestamp atual."""
+    _cache[key] = (value, time.time())
 
 async def sync_macro_data_background():
     logger.info("Sincronizando Selic em background...")
