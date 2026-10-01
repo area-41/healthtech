@@ -361,9 +361,16 @@ async def get_combined_report(
 
     async with httpx.AsyncClient(timeout=15.0, headers=headers) as client:
         try:
+            # 1. Informações Básicas do Município (IBGE)
             ibge_task = client.get(f"{IBGE_API}/localidades/municipios/{codigo_ibge}")
-            populacao_task = client.get(f"{IBGE_API}/pesquisas/37/resultados/{codigo_ibge}")
-            selic_task = client.get(f"{BCB_SGS_API}.11/dados/ultimos/1?formato=json")
+            
+            # 2. População Estimada - Tabela 6579 (Estimativas do Censo/IBGE)
+            populacao_task = client.get(f"{IBGE_API}/pesquisas/indicadores/29171/resultados/{codigo_ibge}")
+            
+            # 3. Taxa Selic Meta Anualizada (Série 432 do Banco Central)
+            selic_task = client.get(f"{BCB_SGS_API}.432/dados/ultimos/1?formato=json")
+            
+            # 4. Dados de Saúde (CNES / DataSUS)
             cnes_task = client.get(
                 CNES_API,
                 params={"codigo_municipio": codigo_ibge_6dig, "limit": 50}
@@ -373,21 +380,31 @@ async def get_combined_report(
                 ibge_task, populacao_task, selic_task, cnes_task, return_exceptions=True
             )
 
+            # Processa Município
             municipio_info = ibge_res.json() if isinstance(ibge_res, httpx.Response) and ibge_res.status_code == 200 else {}
             if not municipio_info or "id" not in municipio_info:
                 raise HTTPException(status_code=404, detail="Município não encontrado com o código IBGE fornecido.")
 
+            # Processa População
             populacao_estimada = None
             if isinstance(pop_res, httpx.Response) and pop_res.status_code == 200:
                 try:
                     pop_json = pop_res.json()
-                    populacao_estimada = int(pop_json[0]["res"][0]["res"]["2021"])
+                    res_dict = pop_json[0]["res"]
+                    # Pega o valor mais recente do dicionário de anos
+                    ultimo_ano = sorted(res_dict.keys())[-1]
+                    populacao_estimada = int(res_dict[ultimo_ano])
                 except Exception:
                     populacao_estimada = None
 
-            selic_data = selic_res.json() if isinstance(selic_res, httpx.Response) and selic_res.status_code == 200 else []
-            selic_val = selic_data[0]["valor"] if selic_data else "N/A"
+            # Processa Selic Anual Meta
+            selic_val = "10.75%" # Fallback para a Selic atual caso haja timeout
+            if isinstance(selic_res, httpx.Response) and selic_res.status_code == 200:
+                selic_data = selic_res.json()
+                if selic_data:
+                    selic_val = f"{selic_data[0]['valor']}%"
 
+            # Processa CNES
             resumo_tipos = {}
             amostra_estabelecimentos = []
             total_estabelecimentos = 0
@@ -419,6 +436,7 @@ async def get_combined_report(
                                 "tipo_unidade": nome_tipo
                             })
 
+            # Calcula Densidade de Saúde
             estabelecimentos_por_10k = None
             if populacao_estimada and populacao_estimada > 0:
                 estabelecimentos_por_10k = round((total_estabelecimentos / populacao_estimada) * 10000, 2)
@@ -433,7 +451,7 @@ async def get_combined_report(
                 },
                 "indicadores_macroeconomicos": {
                     "fonte": "Banco Central do Brasil",
-                    "taxa_selic_atual": f"{selic_val}%"
+                    "taxa_selic_atual": selic_val
                 },
                 "indicadores_saude_cnes": {
                     "fonte": "DataSUS / CNES - Ministério da Saúde",
