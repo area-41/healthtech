@@ -36,8 +36,21 @@ CNES_TIPOS_UNIDADE = {
     "70": "Unidade de Pronto Atendimento (UPA)"
 }
 
-cache_24h = TTLCache(maxsize=1000, ttl=86400)
-cache_1h = TTLCache(maxsize=500, ttl=3600)
+# Cache simples em memória usando dicionários nativos
+cache_24h = {}
+cache_1h = {}
+
+def get_cached(cache_dict: dict, key: str, ttl_seconds: int):
+    if key in cache_dict:
+        val, timestamp = cache_dict[key]
+        if time.time() - timestamp < ttl_seconds:
+            return val
+        else:
+            del cache_dict[key]
+    return None
+
+def set_cached(cache_dict: dict, key: str, value: any):
+    cache_dict[key] = (value, time.time())
 
 scheduler = AsyncIOScheduler()
 
