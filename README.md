@@ -320,3 +320,17 @@ Installed 31 packages in 3.90s
  + websockets==16.1.1
 
  
+
+ ### CacheTools Apscheduler
+
+        uv add cachetools apscheduler
+
+Resolved 52 packages in 2.71s
+      Built healthtech @ file:/                                           
+Prepared 3 packages in 577ms
+Uninstalled 1 package in 13ms
+Installed 4 packages in 170ms
+ + apscheduler==3.11.3
+ + cachetools==7.2.0
+ ~ healthtech==0.1.0 (from file://)
+ + tzlocal==5.4.4
