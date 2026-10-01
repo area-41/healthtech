@@ -3,17 +3,26 @@ import asyncio
 import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.staticfiles import StaticFiles
 
 # Carrega variáveis do ficheiro .env
 load_dotenv()
 
 API_SECRET_KEY = os.getenv("API_SECRET_KEY", "demo_token_123")
 
+# Instância ÚNICA do FastAPI (com Swagger padrão desativado)
 app = FastAPI(
     title="API Unificada: Saúde, IBGE e Financeiro",
     description="Consolida indicadores demográficos do IBGE, estatísticas reais de saúde (CNES), dados macroeconômicos e indicadores calculados de cobertura em saúde.",
-    version="1.3.0"
+    version="1.3.0",
+    docs_url=None
 )
+
+# Monta arquivos estáticos (se a pasta 'static' existir no repositório)
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Mapeamento Oficial do Tipo de Unidade do CNES (DataSUS)
 CNES_TIPOS_UNIDADE = {
@@ -43,10 +52,48 @@ IBGE_API = "https://servicodados.ibge.gov.br/api/v1"
 BCB_SGS_API = "https://api.bcb.gov.br/dados/serie/bcdata.sgs"
 CNES_API = "https://apidadosabertos.saude.gov.br/cnes/estabelecimentos"
 
+# Rota Principal (Servir frontend HTML se existir, senão JSON de boas-vindas)
 @app.get("/")
-def home():
-    return {"status": "online", "docs": "/docs"}
+async def homepage():
+    if os.path.exists("static/index.html"):
+        return FileResponse("static/index.html")
+    return {
+        "status": "online",
+        "docs_swagger": "/docs",
+        "docs_scalar": "/scalar"
+    }
 
+# Documentação Swagger Customizada
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    return get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title=app.title + " - Documentação",
+        swagger_js_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
+        swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-css_url.css",
+        swagger_favicon_url="https://fastapi.tiangolo.com/img/favicon.png",
+        custom_js=None,
+    )
+
+# Documentação Moderna com Scalar
+@app.get("/scalar", include_in_schema=False)
+async def scalar_html():
+    return HTMLResponse("""
+    <!doctype html>
+    <html>
+      <head>
+        <title>Healthtech API Docs</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body>
+        <script id="api-reference" data-url="/openapi.json"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+      </body>
+    </html>
+    """)
+
+# Endpoint da API
 @app.get("/api/v1/relatorio-municipio/{codigo_ibge}")
 async def get_combined_report(
     codigo_ibge: str,
@@ -114,7 +161,6 @@ async def get_combined_report(
                             "Outros"
                         )
                         
-                        # Tradução do código para o nome amigável
                         nome_tipo = CNES_TIPOS_UNIDADE.get(cod_tipo, f"Outros ({cod_tipo})")
                         resumo_tipos[nome_tipo] = resumo_tipos.get(nome_tipo, 0) + 1
 

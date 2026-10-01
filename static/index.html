@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthtech API - Painel Unificado</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-teal-500 text-slate-950 p-2 rounded-lg font-bold">
+                    <i class="fa-solid fa-heart-pulse text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none">Healthtech API</h1>
+                    <p class="text-xs text-slate-400">Saúde, IBGE e Indicadores Financeiros</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="/docs" target="_blank" class="text-slate-300 hover:text-teal-400 transition">Swagger UI</a>
+                <a href="/scalar" target="_blank" class="text-slate-300 hover:text-teal-400 transition">Scalar Docs</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- Formulário de Busca -->
+        <section class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 shadow-xl">
+            <h2 class="text-xl font-semibold text-slate-100 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-magnifying-glass text-teal-400"></i> Consultar Município
+            </h2>
+            <form id="searchForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <!-- Campo de Pesquisa por Nome de Cidade -->
+                <div class="relative">
+                    <label class="block text-xs text-slate-400 mb-1">Buscar Município (Nome ou Código)</label>
+                    <input type="text" id="municipioInput" value="São Paulo - SP" placeholder="Digite a cidade (ex: Porto Alegre)" required autocomplete="off"
+                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-slate-100 focus:outline-none focus:border-teal-400">
+                    <input type="hidden" id="codigoIbge" value="3550308">
+                    <div id="suggestions" class="absolute left-0 right-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-lg max-h-48 overflow-y-auto hidden z-50 shadow-2xl"></div>
+                </div>
+
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Chave de API (API Key)</label>
+                    <input type="password" id="apiKey" value="demo_token_123" required
+                        class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-slate-100 focus:outline-none focus:border-teal-400">
+                </div>
+                
+                <div class="flex items-end">
+                    <button type="submit" id="btnConsultar"
+                        class="w-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold py-2 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-2">
+                        <span>Gerar Relatório</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Spinner de Carregamento -->
+        <div id="loading" class="hidden text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-teal-500 border-t-transparent"></div>
+            <p class="text-slate-400 text-sm mt-3">Consultando IBGE, DataSUS e Banco Central...</p>
+        </div>
+
+        <!-- Mensagem de Erro -->
+        <div id="errorMessage" class="hidden bg-rose-500/10 border border-rose-500/30 text-rose-300 p-4 rounded-xl text-sm"></div>
+
+        <!-- Conteúdo do Relatório -->
+        <div id="reportContent" class="hidden space-y-8">
+            
+            <!-- Cards de Métricas -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-800/40 border border-slate-700/50 p-5 rounded-xl">
+                    <div class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Município / UF</div>
+                    <div id="metricMunicipio" class="text-2xl font-bold text-white">--</div>
+                    <div id="metricRegiao" class="text-xs text-teal-400 mt-1">--</div>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/50 p-5 rounded-xl">
+                    <div class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">População Estimada</div>
+                    <div id="metricPopulacao" class="text-2xl font-bold text-white">--</div>
+                    <div class="text-xs text-slate-500 mt-1">Fonte: IBGE</div>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/50 p-5 rounded-xl">
+                    <div class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Densidade de Saúde</div>
+                    <div id="metricDensidade" class="text-2xl font-bold text-teal-400">--</div>
+                    <div class="text-xs text-slate-400 mt-1">Estabelecimentos / 10k hab.</div>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/50 p-5 rounded-xl">
+                    <div class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Taxa Selic Atual</div>
+                    <div id="metricSelic" class="text-2xl font-bold text-emerald-400">--</div>
+                    <div class="text-xs text-slate-500 mt-1">Fonte: Banco Central</div>
+                </div>
+            </section>
+
+            <!-- Seção de Gráficos e Tabelas -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 bg-slate-800/40 border border-slate-700/50 p-6 rounded-xl flex flex-col justify-between">
+                    <h3 class="text-lg font-semibold text-slate-200 mb-4">Tipos de Unidades de Saúde</h3>
+                    <div class="relative w-full h-64 flex items-center justify-center">
+                        <canvas id="chartUnidades"></canvas>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-slate-800/40 border border-slate-700/50 p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold text-slate-200 mb-4">Amostra de Estabelecimentos Cadastrados (CNES)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead class="bg-slate-900/60 text-xs uppercase text-slate-400 border-b border-slate-700">
+                                <tr>
+                                    <th class="py-3 px-4">CNES</th>
+                                    <th class="py-3 px-4">Nome Fantasia</th>
+                                    <th class="py-3 px-4">Tipo de Unidade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableAmostra" class="divide-y divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts do Frontend -->
+    <script>
+        let chartInstance = null;
+
+        // Autocompletar de Municípios do IBGE
+        const municipioInput = document.getElementById('municipioInput');
+        const codigoIbgeInput = document.getElementById('codigoIbge');
+        const suggestions = document.getElementById('suggestions');
+
+        municipioInput.addEventListener('input', async (e) => {
+            const query = e.target.value.trim();
+            if (query.length < 3) {
+                suggestions.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios`);
+                const municipios = await res.json();
+                
+                const filtrados = municipios
+                    .filter(m => m.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .includes(query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")))
+                    .slice(0, 6);
+
+                suggestions.innerHTML = '';
+                if (filtrados.length > 0) {
+                    filtrados.forEach(m => {
+                        const item = document.createElement('div');
+                        item.className = 'px-4 py-2 hover:bg-slate-700 cursor-pointer text-sm text-slate-200 flex justify-between items-center';
+                        item.innerHTML = `<span>${m.nome} - ${m.microrregiao.mesorregiao.UF.sigla}</span> <span class="text-xs text-teal-400 font-mono">${m.id}</span>`;
+                        item.onclick = () => {
+                            municipioInput.value = `${m.nome} - ${m.microrregiao.mesorregiao.UF.sigla}`;
+                            codigoIbgeInput.value = m.id;
+                            suggestions.classList.add('hidden');
+                        };
+                        suggestions.appendChild(item);
+                    });
+                    suggestions.classList.remove('hidden');
+                } else {
+                    suggestions.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error('Erro ao buscar municípios:', err);
+            }
+        });
+
+        // Submissão do Formulário
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const codigoIbge = codigoIbgeInput.value.trim();
+            const apiKey = document.getElementById('apiKey').value.trim();
+            
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
+            const reportContent = document.getElementById('reportContent');
+
+            loading.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            reportContent.classList.add('hidden');
+
+            try {
+                const response = await fetch(`/api/v1/relatorio-municipio/${codigoIbge}?api_key=${apiKey}`);
+                
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || `Erro na consulta (Status: ${response.status})`);
+                }
+
+                const result = await response.json();
+                const data = result.data;
+
+                // Preencher Métricas
+                document.getElementById('metricMunicipio').innerText = `${data.municipio.nome} - ${data.municipio.uf}`;
+                document.getElementById('metricRegiao').innerText = `Região ${data.municipio.regiao}`;
+                document.getElementById('metricPopulacao').innerText = data.municipio.populacao_estimada 
+                    ? data.municipio.populacao_estimada.toLocaleString('pt-BR') 
+                    : 'N/I';
+                document.getElementById('metricDensidade').innerText = data.indicadores_saude_cnes.densidade_saude.estabelecimentos_por_10k_hab;
+                document.getElementById('metricSelic').innerText = data.indicadores_macroeconomicos.taxa_selic_atual;
+
+                // Preencher Tabela
+                const tbody = document.getElementById('tableAmostra');
+                tbody.innerHTML = '';
+                data.indicadores_saude_cnes.amostra_estabelecimentos.forEach(est => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-800/50 transition';
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-mono text-teal-400">${est.cnes}</td>
+                        <td class="py-3 px-4 font-medium text-white">${est.nome_fantasia}</td>
+                        <td class="py-3 px-4">${est.tipo_unidade}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                // Atualizar Gráfico
+                const distTipos = data.indicadores_saude_cnes.distribuicao_tipos_unidade;
+                const labels = Object.keys(distTipos);
+                const values = Object.values(distTipos);
+
+                if (chartInstance) chartInstance.destroy();
+
+                const ctx = document.getElementById('chartUnidades').getContext('2d');
+                chartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: ['#14b8a6', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } }
+                        }
+                    }
+                });
+
+                reportContent.classList.remove('hidden');
+
+            } catch (err) {
+                errorMessage.innerText = err.message;
+                errorMessage.classList.remove('hidden');
+            } finally {
+                loading.classList.add('hidden');
+            }
+        });
+
+        // Carregar automaticamente na abertura
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('searchForm').dispatchEvent(new Event('submit'));
+        });
+    </script>
+</body>
+</html>

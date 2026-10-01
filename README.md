@@ -278,3 +278,45 @@ Rodar novamente a API:
 
 
 
+### Instalando o Streamlit:
+
+        uv add streamlit plotly
+
+Resolved 49 packages in 1.32s
+      Built healthtech @ file://                                                   
+Prepared 15 packages in 11.81s
+Uninstalled 1 package in 12ms
+Installed 31 packages in 3.90s
+ + altair==6.3.0
+ + attrs==26.1.0
+ + charset-normalizer==3.5.2
+ ~ healthtech==0.1.0 (from file://)
+ + httptools==0.8.0
+ + itsdangerous==2.2.0
+ + jinja2==3.1.6
+ + jsonschema==4.26.0
+ + jsonschema-specifications==2025.9.1
+ + markupsafe==3.0.3
+ + narwhals==2.26.0
+ + numpy==2.5.3
+ + packaging==26.3
+ + pandas==3.0.6
+ + pillow==12.3.0
+ + plotly==7.1.0
+ + protobuf==7.36.2
+ + pyarrow==25.0.1
+ + pydeck==0.9.3
+ + python-dateutil==2.9.0.post0
+ + python-multipart==0.0.32
+ + referencing==0.37.0
+ + requests==2.34.2
+ + rpds-py==2026.6.3
+ + six==1.17.0
+ + streamlit==1.64.0
+ + toml==0.10.2
+ + tzdata==2026.4
+ + urllib3==2.8.0
+ + watchdog==6.0.0
+ + websockets==16.1.1
+
+ 
