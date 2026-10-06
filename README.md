@@ -1,3 +1,5 @@
+# Healthtech API Unificada (Saúde, IBGE e Financeiro)
+
 ### Testar online:
 
 Como testar agora mesmo:
@@ -9,13 +11,12 @@ Abra o link no seu navegador:
 
 ![alt text](static/image.png)
 
-# 🏥 Healthtech API Unificada (Saúde, IBGE e Financeiro)
 
 API RESTful desenvolvida em Python com **FastAPI** que consolida indicadores demográficos do IBGE, estatísticas em tempo real de estabelecimentos de saúde (DataSUS/CNES), taxas macroeconômicas (Banco Central do Brasil) e métricas calculadas de densidade de saúde por habitante.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+### Tecnologias Utilizadas
 
 - **Python 3.12+**
 - **FastAPI**: Framework web assíncrono de alta performance.
@@ -26,20 +27,20 @@ API RESTful desenvolvida em Python com **FastAPI** que consolida indicadores dem
 
 ---
 
-## 🚀 Funcionalidades
+### Funcionalidades
 
-- 📌 **Validação Geográfica**: Validação e consumo de dados territoriais via API de Localidades do IBGE.
-- 🏦 **Indicadores Financeiros**: Consulta em tempo real da Taxa SELIC acumulada via API SGS do Banco Central.
-- 🏥 **Estatísticas de Saúde CNES**:
+- **Validação Geográfica**: Validação e consumo de dados territoriais via API de Localidades do IBGE.
+- **Indicadores Financeiros**: Consulta em tempo real da Taxa SELIC acumulada via API SGS do Banco Central.
+- **Estatísticas de Saúde CNES**:
   - Mapeamento e tradução automática dos tipos de unidade do DataSUS (ex: *Consultório Isolado*, *Hospital Geral*, *CAPS*).
   - Listagem de estabelecimentos cadastrados no município.
-- 📊 **Métricas Analíticas**:
+- **Métricas Analíticas**:
   - Densidade populacional de saúde (*Estabelecimentos de saúde por 10.000 habitantes*).
-- 🔐 **Autenticação por API Key**: Proteção de rotas via parâmetros de segurança configuráveis por ambiente (`.env`).
+- **Autenticação por API Key**: Proteção de rotas via parâmetros de segurança configuráveis por ambiente (`.env`).
 
 ---
 
-## 📂 Estrutura do Projeto
+### Estrutura do Projeto
 
 ```text
 healthtech/
@@ -56,17 +57,19 @@ healthtech/
 
 ---
 
-## ⚙️ Como Executar o Projeto Localmente
+### Como Executar o Projeto Localmente
 
 ### 1. Clonar o repositório
-```bash
-git clone [https://github.com/SEU_USUARIO/healthtech.git](https://github.com/SEU_USUARIO/healthtech.git)
+
+```
+git clone [https://github.com/area-41/healthtech.git](https://github.com/area-41/healthtech.git)
+
 cd healthtech
 ```
 
 ### 2. Configurar o Ambiente Virtual e Dependências
 Utilizando o `uv`:
-```bash
+```
 uv sync
 ```
 
@@ -82,12 +85,12 @@ ENVIRONMENT=development
 uv run uvicorn src.healthtech.main:app --reload
 ```
 
-Aceda à documentação interativa (Swagger UI) em:  
+Acesse a documentação interativa (Swagger UI) em:  
 👉 `http://127.0.0.1:8000/docs`
 
 ---
 
-## 🧪 Exemplo de Requisição e Resposta
+### Exemplo de Requisição e Resposta
 
 **End-point:**
 `GET /api/v1/relatorio-municipio/3550308?api_key=demo_token_123`
@@ -140,64 +143,27 @@ Aceda à documentação interativa (Swagger UI) em:
 
             uv pip compile pyproject.toml -o requirements.txt
         annotated-doc==0.0.5
-            # via fastapi
         annotated-types==0.8.0
-            # via pydantic
         anyio==4.15.1
-            # via
-            #   httpx
-            #   starlette
         certifi==2026.7.22
-            # via
-            #   httpcore
-            #   httpx
         click==8.5.0
-            # via uvicorn
         fastapi==0.142.1
-            # via healthtech (pyproject.toml)
         h11==0.16.0
-            # via
-            #   httpcore
-            #   uvicorn
         httpcore==1.0.9
-            # via httpx
         httpx==0.28.1
-            # via healthtech (pyproject.toml)
         idna==3.20
-            # via
-            #   anyio
-            #   httpx
         opentelemetry-api==1.45.0
-            # via fastapi
         pydantic==2.13.5
-            # via fastapi
         pydantic-core==2.46.5
-            # via pydantic
         python-dotenv==1.2.3
-            # via healthtech (pyproject.toml)
         starlette==1.7.0
-            # via fastapi
         typing-extensions==4.16.0
-            # via
-            #   anyio
-            #   fastapi
-            #   opentelemetry-api
-            #   pydantic
-            #   pydantic-core
-            #   starlette
-            #   typing-inspection
         typing-inspection==0.4.4
-            # via
-            #   fastapi
-            #   pydantic
         uvicorn==0.54.0
-            # via healthtech (pyproject.toml)
 
 
-
-## Healthtech
-
-Combinar dados de Saúde (DataSUS / Ministério da Saúde), Demografia e Indicadores Sociais (IBGE) e Finanças (Banco Central / Cotações) em uma única API
+### Healthtech 
+Combinar dados de Saúde (DataSUS / Ministério da Saúde), Demográfica, Indicadores Sociais (IBGE) e Finanças (Banco Central / Cotações) em uma única API.
 
 
 ### Instalando UV FastAPI:
@@ -205,15 +171,15 @@ Combinar dados de Saúde (DataSUS / Ministério da Saúde), Demografia e Indicad
         uv add fastapi
 
 Resolved 12 packages in 1.23s
-      Built healthtech @ file://
 Prepared 6 packages in 967ms
 Uninstalled 1 package in 11ms
 Installed 12 packages in 387ms
+
  + annotated-doc==0.0.5
  + annotated-types==0.8.0
  + anyio==4.15.1
  + fastapi==0.142.1
- ~ healthtech==0.1.0 (from file://)
+ + healthtech==0.1.0 (from file://)
  + idna==3.20
  + opentelemetry-api==1.45.0
  + pydantic==2.13.5
@@ -227,14 +193,13 @@ Installed 12 packages in 387ms
 
         uv add httpx
 
-Resolved 16 packages in 1.46s
-      Built healthtech @ file://                                      
+Resolved 16 packages in 1.46s                               
 Prepared 1 package in 144ms
 Uninstalled 1 package in 6ms
 Installed 5 packages in 1.09s
  + certifi==2026.7.22
  + h11==0.16.0
- ~ healthtech==0.1.0 (from file://)
+ + healthtech==0.1.0 (from file://)
  + httpcore==1.0.9
  + httpx==0.28.1
 
@@ -244,31 +209,26 @@ Installed 5 packages in 1.09s
         uv add fastapi uvicorn
 
 Resolved 18 packages in 283ms
-      Built healthtech @ file:/                                                   
 Prepared 2 packages in 143ms
 Uninstalled 1 package in 12ms
 Installed 3 packages in 89ms
  + click==8.5.0
- ~ healthtech==0.1.0 (from file://)
+ + healthtech==0.1.0 (from file://)
  + uvicorn==0.54.0
 
-
- ### Iniciar o servidor API:
+ ## Iniciar o servidor API:
 
         uv run uvicorn main:app --reload
-
-
 
 ### Instalar .env para Keys:
 
         uv add python-dotenv
 
 Resolved 19 packages in 249ms
-      Built healthtech @ file://                                                   
 Prepared 1 package in 42ms
 Uninstalled 1 package in 5ms
 Installed 2 packages in 136ms
- ~ healthtech==0.1.0 (from file:/)
+ + healthtech==0.1.0 (from file:/)
  + python-dotenv==1.2.3
 
 
@@ -283,14 +243,13 @@ Rodar novamente a API:
         uv add streamlit plotly
 
 Resolved 49 packages in 1.32s
-      Built healthtech @ file://                                                   
 Prepared 15 packages in 11.81s
 Uninstalled 1 package in 12ms
 Installed 31 packages in 3.90s
  + altair==6.3.0
  + attrs==26.1.0
  + charset-normalizer==3.5.2
- ~ healthtech==0.1.0 (from file://)
+ + healthtech==0.1.0 (from file://)
  + httptools==0.8.0
  + itsdangerous==2.2.0
  + jinja2==3.1.6
@@ -319,18 +278,15 @@ Installed 31 packages in 3.90s
  + watchdog==6.0.0
  + websockets==16.1.1
 
- 
-
  ### CacheTools Apscheduler
 
         uv add cachetools apscheduler
 
-Resolved 52 packages in 2.71s
-      Built healthtech @ file:/                                           
+Resolved 52 packages in 2.71s     
 Prepared 3 packages in 577ms
 Uninstalled 1 package in 13ms
 Installed 4 packages in 170ms
  + apscheduler==3.11.3
  + cachetools==7.2.0
- ~ healthtech==0.1.0 (from file://)
+ + healthtech==0.1.0 (from file://)
  + tzlocal==5.4.4
