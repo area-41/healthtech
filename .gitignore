@@ -2,6 +2,7 @@
 .venv/
 env/
 venv/
+material/
 
 # Variáveis de ambiente e credenciais
 .env

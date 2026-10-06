@@ -1,10 +1,10 @@
 [project]
 name = "healthtech"
 version = "0.1.0"
-description = "Add your description here"
+description = "API RESTful desenvolvida com FastAPI que consolida IBGE, DataSUS, taxas Banco Central do Brasil e métricas de densidade."
 readme = "README.md"
 authors = [
-    { name = "Área 41", email = "email.diferente.victor@gmail.com" }
+    { name = "Área 41", email = "" }
 ]
 requires-python = ">=3.12"
 dependencies = [
