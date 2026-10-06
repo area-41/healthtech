@@ -290,3 +290,15 @@ Installed 4 packages in 170ms
  + cachetools==7.2.0
  + healthtech==0.1.0 (from file://)
  + tzlocal==5.4.4
+
+### Instalando Scalar
+
+    uv add scalar-fastapi
+
+Resolved 53 packages in 2.94s
+      Built healthtech @ file://                                      
+Prepared 2 packages in 437ms
+Uninstalled 1 package in 16ms
+Installed 2 packages in 424ms
+ + healthtech==0.1.0 
+ + scalar-fastapi==1.9.1
